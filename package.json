@@ -1,0 +1,17 @@
+{
+  "author": "Jim Grandpre <jim@coursekit.com> (coursekit.com), Alexey Komissarouk <alexeymk@gmail.com>",
+  "name": "pennapps-voting",
+  "description": "Pennaps Voting App",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/AlexeyMK/pennapps-voting.git"
+  },
+  "engines": {
+    "node": "~v0.4.11"
+  },
+  "dependencies": {
+		"zappa": "0.2.0"
+  },
+  "devDependencies": {}
+}
