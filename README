@@ -1,0 +1,3 @@
+Supports voting for PennApps 2011 (and maybe more)
+Uses MongoDB, Zappa (which sits on top of Express JS), and Twitter Bootstrap.
+Generally a good idea.
