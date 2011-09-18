@@ -244,6 +244,10 @@ db.open (err,db) ->
           emit 'vote', id: 1
           #emit 'unvote', id: 1
 
+      window.show_video = (url) -> $.colorbox
+        html: """<iframe class="youtube-player" type="text/html" width="640" height="385" src="#{url}" frameborder="0">
+</iframe>"""
+        transition:'fade'
 
       at voted: ->
         console.log "Voted! #{@client_id} voted for #{@id}"
@@ -261,11 +265,12 @@ db.open (err,db) ->
         div class: 'team span-one-third', ->
           a href: team.url, ->
             h3 "Team Name goes Here"
-          img
-            width: 300
-            height: 225
-            src: 'http://img.youtube.com/vi/EqWRZrupLrI/0.jpg'#eventually: team.video
-            frameborder: 0
+          a onclick: "show_video('#{team.video}')", ->
+            img
+              width: 300
+              height: 225
+              src: 'http://img.youtube.com/vi/EqWRZrupLrI/0.jpg'#eventually: team.video
+              frameborder: 0
           div id: 'vote_for', style: 'float: right;', ->
             p "Vote"
             img
@@ -287,7 +292,9 @@ db.open (err,db) ->
           script src: '/socket.io/socket.io.js'
           script src: '/zappa/jquery.js'
           script src: '/zappa/zappa.js'
+          script src: '/jquery.colorbox-min.js'
           script src: '/index.js'
+  
           link
             rel: 'stylesheet'
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
