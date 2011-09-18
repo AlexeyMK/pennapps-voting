@@ -237,13 +237,21 @@ db.open (err,db) ->
               window.location.hash
           emit 'authorize',token: hash
           window.location.hash = ''
-        $('button').click ->
-          emit 'vote', id: 1
-          #emit 'unvote', id: 1
+      window.vote_for = (team) ->
+        emit 'vote', id: team
+
+        $(".vote_#{team}").attr('src','/tick_32.png').attr('onclick','').unbind('click').click do (team) -> () ->
+            window.unvote(team)
+
+      window.unvote = (team) ->
+        emit 'unvote', id: team
+        $(".vote_#{team}").attr('src','/checkbox_empty.png').unbind('click').click do (team) -> () ->
+            window.vote_for(team)
 
       window.show_video = (url) -> $.colorbox
         html: """<iframe class="youtube-player" type="text/html" width="640" height="385" src="#{url}" frameborder="0">
 </iframe>"""
+
         transition:'fade'
 
       at voted: ->
@@ -252,6 +260,8 @@ db.open (err,db) ->
         console.log "Unvoted! #{@client_id} voted for #{@id}"
       at authorized: ->
         console.log "I've voted for!",@votes
+        for v in @votes
+            $(".vote_#{v}").click()
 
     view index: ->
       doctype 5
@@ -273,6 +283,8 @@ db.open (err,db) ->
               name:'vote_tick'
               width: '40'
               height: '40px'
+              onclick: "vote_for('#{team.id}')"
+              class: "vote_#{team.id}"
           p class: 'description', ->
             team.description
           p class:'team_members', ->
@@ -289,7 +301,7 @@ db.open (err,db) ->
           script src: '/zappa/zappa.js'
           script src: '/jquery.colorbox-min.js'
           script src: '/index.js'
-  
+
           link
             rel: 'stylesheet'
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
@@ -297,6 +309,8 @@ db.open (err,db) ->
           div class: "container", ->
             h1 "PennApps Voting, Logo goes here"
             h2 "img src goes here for for FRC, UA"
+            a href: "/auth", ->
+                "Connect with Facebook to vote!"
             section id:'grid-system', ->
               for row in [0,1] #@teams.length / 3 in real world
                  div class:'row show-grid', ->
