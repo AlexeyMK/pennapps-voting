@@ -151,13 +151,13 @@ db.open (err,db) ->
       url: 'http://www.whartoniteseekscodemonkey.com'
       video: "BnDH-RXCptY"
       description: 'Fantastically useless in every possible way.'
-
+    ###
 
     get '/': ->
-      render 'index', layout: no
-      #teams.all (err,t) =>
-      #  @teams = t
-      #  console.log @teams
+
+      teams.all (err,t) =>
+        @teams = t
+        render 'index', layout: no
 
     get '/auth': ->
       redirect fb.getAuthorizeUrl
@@ -173,13 +173,21 @@ db.open (err,db) ->
             token = null
             while !token or secure_association_dictionary[token]?
               token = hashlib.md5 Date()
-            secure_association_dictionary[token] = data.id
+            console.log data
+            is_student = /.edu$/.test(data.email)
+            for s in data.education
+                if s.type == 'College'
+                    if s.year? and s.year.name? and s.year.name > 2011
+                        is_student = true
+            secure_association_dictionary[token] =
+                id: data.id
+                is_student: is_student
             redirect "/##{token}"
 
     at authorize: ->
       console.log @token
       if secure_association_dictionary[@token]?
-        id = secure_association_dictionary[@token]
+        {id,is_student} = secure_association_dictionary[@token]
         client.id = id
         users.get id,(err,user) =>
           if err?
@@ -188,6 +196,7 @@ db.open (err,db) ->
           if !user?
             users.save
               id: id
+              is_student: is_student
               votes: []
           emit 'authorized',
             votes: user?.votes ? []
