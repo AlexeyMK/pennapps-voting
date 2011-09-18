@@ -40,6 +40,7 @@ db.open (err,db) ->
     ###
     teams.save
       id: 0
+      votes: 0
       name: 'A Name'
       team_members: ['Jim Grandpre','Alexey Komissarouk']
       url: 'http://www.url.com'
@@ -48,6 +49,7 @@ db.open (err,db) ->
 
     teams.save
       id: 1
+      votes: 0
       name: 'A Name'
       team_members: ['Tim Lastname','Ayaka Firstname']
       url: 'http://www.link.com'
@@ -56,6 +58,7 @@ db.open (err,db) ->
 
     teams.save
       id: 2
+      votes: 0
       name: 'A Name'
       team_members: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
       url: 'http://www.website.com'
@@ -64,6 +67,7 @@ db.open (err,db) ->
 
     teams.save
       id: 3
+      votes: 0
       name: 'A Name'
       team_members: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
       url: 'http://www.xkcd.com'
@@ -72,6 +76,7 @@ db.open (err,db) ->
 
     teams.save
       id: 4
+      votes: 0
       name: 'A Name'
       team_members: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
       url: 'http://www.alexeymk.com'
@@ -80,6 +85,7 @@ db.open (err,db) ->
 
     teams.save
       id: 5
+      votes: 0
       name: 'A Name'
       team_members: ['Four Score','And Seven','Years Ago']
       url: 'http://www.constitution.com'
@@ -88,6 +94,7 @@ db.open (err,db) ->
 
     teams.save
       id: 6
+      votes: 0
       name: 'A Name'
       team_members: ['Presnted With','Much Elequonce','Product Sucked']
       url: 'http://www.whartoniteseekscodemonkey.com'
@@ -96,6 +103,7 @@ db.open (err,db) ->
 
     teams.save
       id: 7
+      votes: 0
       name: 'A Name'
       team_members: ['Jim Grandpre','Alexey Komissarouk']
       url: 'http://www.url.com'
@@ -104,6 +112,7 @@ db.open (err,db) ->
 
     teams.save
       id: 8
+      votes: 0
       name: 'A Name'
       team_members: ['Tim Lastname','Ayaka Firstname']
       url: 'http://www.link.com'
@@ -112,6 +121,7 @@ db.open (err,db) ->
 
     teams.save
       id: 9
+      votes: 0
       name: 'A Name'
       team_members: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
       url: 'http://www.website.com'
@@ -120,6 +130,7 @@ db.open (err,db) ->
 
     teams.save
       id: 10
+      votes: 0
       name: 'A Name'
       team_members: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
       url: 'http://www.xkcd.com'
@@ -128,6 +139,7 @@ db.open (err,db) ->
 
     teams.save
       id: 11
+      votes: 0
       name: 'A Name'
       team_members: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
       url: 'http://www.alexeymk.com'
@@ -136,6 +148,7 @@ db.open (err,db) ->
 
     teams.save
       id: 12
+      votes: 0
       name: 'A Name'
       team_members: ['Four Score','And Seven','Years Ago']
       url: 'http://www.constitution.com'
@@ -144,6 +157,7 @@ db.open (err,db) ->
 
     teams.save
       id: 13
+      votes: 0
       name: 'A Name'
       team_members: ['Presnted With','Much Elequonce','Product Sucked']
       url: 'http://www.whartoniteseekscodemonkey.com'
@@ -215,6 +229,9 @@ db.open (err,db) ->
             return
           if !(@id in user.votes)
             user.votes.push(@id)
+            teams.get @id,(team) ->
+                team.votes++
+                teams.save team
           users.save user, =>
             emit 'voted',
               id: @id
@@ -228,6 +245,9 @@ db.open (err,db) ->
             return
           if (@id in user.votes)
             user.votes = _(user.votes).without(@id)
+            teams.get @id,(team) ->
+                team.votes--
+                teams.save team
           users.save user, =>
             emit 'unvoted',
               id: @id
