@@ -1,156 +1,247 @@
 mongo = require 'mongodb'
 db = new mongo.Db('test', new mongo.Server("127.0.0.1", 27017, {}))
 data = {}
-
+fb = require 'facebook-js'
 db.open (err,db) ->
-  require('zappa') {db},->
+  require('zappa') {db,fb},->
     use 'static'
     enable 'serve jquery'
 
+    def fbapi: require 'facebook-api'
+    def appid: "151280421549911"
+    def secret: "a4159d959f722a18b097fff418e0148e"
+    def fs: require 'fs'
+    def hashlib: require 'hashlib'
+    def _: (require 'underscore')._
     class id_accessible
-      constructor: (@type) ->
-      save: (obj) ->
-#        console.log @type
-        db.collection @type,(err,collection) ->
-          collection.insert(obj)
+      constructor: (@db,@type) ->
+      save: (obj,cb) ->
+        @db.collection @type,(err,collection) ->
+          collection.update
+            id:obj.id
+            obj
+            upsert: true
+          cb?()
       get: (id,cb) ->
-        console.log @type
-        db.collection @type,(err,collection) ->
+        @db.collection @type,(err,collection) ->
           collection.findOne(id:id,cb)
       all: (cb) ->
-        db.collection @type,(err,collection) ->
+        @db.collection @type,(err,collection) ->
           collection.find().toArray(cb)
-
-    users = new id_accessible 'users'
-    teams = new id_accessible 'teams'
+    users = new id_accessible db,'users'
+    teams = new id_accessible db,'teams'
     def users: users
     def teams: teams
 
     #teams.all((err,t) -> console.log t)
     #teams.get(0,(err,t) -> console.log t)
 
+    def secure_association_dictionary: {}
+
     #db.collection 'users',(err,collection) -> users = collection
-#    teams.save
-#      id: 0
-#      names: ['Jim Grandpre','Alexey Komissarouk']
-#      url: 'www.url.com'
-#      video: "http://www.youtube.com/embed/1Ek4QaFQ1qo"
-#      description: 'This is my app!'
-#
-#    teams.save
-#      id: 1
-#      names: ['Tim Lastname','Ayaka Firstname']
-#      url: 'www.link.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'This is their app!'
-#
-#    teams.save
-#      id: 2
-#      names: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
-#      url: 'www.website.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'Yet more application code produced by hacking hackery hacker hacks.'
-#
-#    teams.save
-#      id: 3
-#      names: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
-#      url: 'www.xkcd.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'Webcomics appropriately represented'
-#
-#    teams.save
-#      id: 4
-#      names: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
-#      url: 'www.alexeymk.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'This is a list of things which make me rather irate'
-#
-#    teams.save
-#      id: 5
-#      names: ['Four Score','And Seven','Years Ago']
-#      url: 'www.constitution.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'Governmental refrences tickle my fancy'
-#
-#    teams.save
-#      id: 6
-#      names: ['Presnted With','Much Elequonce','Product Sucked']
-#      url: 'www.whartoniteseekscodemonkey.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'Fantastically useless in every possible way.'
-#
-#    teams.save
-#      id: 7
-#      names: ['Jim Grandpre','Alexey Komissarouk']
-#      url: 'www.url.com'
-#      video: "http://www.youtube.com/embed/1Ek4QaFQ1qo"
-#      description: 'This is my app!'
-#
-#    teams.save
-#      id: 8
-#      names: ['Tim Lastname','Ayaka Firstname']
-#      url: 'www.link.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'This is their app!'
-#
-#    teams.save
-#      id: 9
-#      names: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
-#      url: 'www.website.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'Yet more application code produced by hacking hackery hacker hacks.'
-#
-#    teams.save
-#      id: 10
-#      names: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
-#      url: 'www.xkcd.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'Webcomics appropriately represented'
-#
-#    teams.save
-#      id: 11
-#      names: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
-#      url: 'www.alexeymk.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'This is a list of things which make me rather irate'
-#
-#    teams.save
-#      id: 12
-#      names: ['Four Score','And Seven','Years Ago']
-#      url: 'www.constitution.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'Governmental refrences tickle my fancy'
-#
-#    teams.save
-#      id: 13
-#      names: ['Presnted With','Much Elequonce','Product Sucked']
-#      url: 'www.whartoniteseekscodemonkey.com'
-#      video: "http://www.youtube.com/embed/BnDH-RXCptY"
-#      description: 'Fantastically useless in every possible way.'
+    ###
+    teams.save
+      id: 0
+      name: 'A Name'
+      team_members: ['Jim Grandpre','Alexey Komissarouk']
+      url: 'http://www.url.com'
+      video: "BnDH-RXCptY"
+      description: 'This is my app!'
+
+    teams.save
+      id: 1
+      name: 'A Name'
+      team_members: ['Tim Lastname','Ayaka Firstname']
+      url: 'http://www.link.com'
+      video: "BnDH-RXCptY"
+      description: 'This is their app!'
+
+    teams.save
+      id: 2
+      name: 'A Name'
+      team_members: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
+      url: 'http://www.website.com'
+      video:"BnDH-RXCptY"
+      description: 'Yet more application code produced by hacking hackery hacker hacks.'
+
+    teams.save
+      id: 3
+      name: 'A Name'
+      team_members: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
+      url: 'http://www.xkcd.com'
+      video: "BnDH-RXCptY"
+      description: 'Webcomics appropriately represented'
+
+    teams.save
+      id: 4
+      name: 'A Name'
+      team_members: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
+      url: 'http://www.alexeymk.com'
+      video: "BnDH-RXCptY"
+      description: 'This is a list of things which make me rather irate'
+
+    teams.save
+      id: 5
+      name: 'A Name'
+      team_members: ['Four Score','And Seven','Years Ago']
+      url: 'http://www.constitution.com'
+      video: "BnDH-RXCptY"
+      description: 'Governmental refrences tickle my fancy'
+
+    teams.save
+      id: 6
+      name: 'A Name'
+      team_members: ['Presnted With','Much Elequonce','Product Sucked']
+      url: 'http://www.whartoniteseekscodemonkey.com'
+      video: "BnDH-RXCptY"
+      description: 'Fantastically useless in every possible way.'
+
+    teams.save
+      id: 7
+      name: 'A Name'
+      team_members: ['Jim Grandpre','Alexey Komissarouk']
+      url: 'http://www.url.com'
+      video: "BnDH-RXCptY"
+      description: 'This is my app!'
+
+    teams.save
+      id: 8
+      name: 'A Name'
+      team_members: ['Tim Lastname','Ayaka Firstname']
+      url: 'http://www.link.com'
+      video: "BnDH-RXCptY"
+      description: 'This is their app!'
+
+    teams.save
+      id: 9
+      name: 'A Name'
+      team_members: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
+      url: 'http://www.website.com'
+      video: "BnDH-RXCptY"
+      description: 'Yet more application code produced by hacking hackery hacker hacks.'
+
+    teams.save
+      id: 10
+      name: 'A Name'
+      team_members: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
+      url: 'http://www.xkcd.com'
+      video: "BnDH-RXCptY"
+      description: 'Webcomics appropriately represented'
+
+    teams.save
+      id: 11
+      name: 'A Name'
+      team_members: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
+      url: 'http://www.alexeymk.com'
+      video: "BnDH-RXCptY"
+      description: 'This is a list of things which make me rather irate'
+
+    teams.save
+      id: 12
+      name: 'A Name'
+      team_members: ['Four Score','And Seven','Years Ago']
+      url: 'http://www.constitution.com'
+      video: "BnDH-RXCptY"
+      description: 'Governmental refrences tickle my fancy'
+
+    teams.save
+      id: 13
+      name: 'A Name'
+      team_members: ['Presnted With','Much Elequonce','Product Sucked']
+      url: 'http://www.whartoniteseekscodemonkey.com'
+      video: "BnDH-RXCptY"
+      description: 'Fantastically useless in every possible way.'
 
 
     get '/': ->
-      teams.all (err,t) =>
-        @teams = t
-        console.log @teams
-        render 'index', layout: no
+      render 'index', layout: no
+      #teams.all (err,t) =>
+      #  @teams = t
+      #  console.log @teams
 
-    at 'set nickname': ->
-      client.nickname = @nickname
+    get '/auth': ->
+      redirect fb.getAuthorizeUrl
+        client_id: appid
+        redirect_uri: 'http://localhost:3000/auth2'
+        scope: 'email, user_education_history'
 
-    at said: ->
-      io.sockets.emit 'said', nickname: client.nickname, text: @text
+    get '/auth2': ->
+      fb.getAccessToken appid,secret,@code,'http://localhost:3000/auth2',
+        (err,access_token, refresh_token) =>
+          cl = fbapi.user(access_token)
+          cl.me.info (err,data) ->
+            token = null
+            while !token or secure_association_dictionary[token]?
+              token = hashlib.md5 Date()
+            secure_association_dictionary[token] = data.id
+            redirect "/##{token}"
+
+    at authorize: ->
+      console.log @token
+      if secure_association_dictionary[@token]?
+        id = secure_association_dictionary[@token]
+        client.id = id
+        users.get id,(err,user) =>
+          if err?
+            console.error err
+            return
+          if !user?
+            users.save
+              id: id
+              votes: []
+          emit 'authorized',
+            votes: user?.votes ? []
+
+    at vote: ->
+      if client.id
+        users.get client.id,(err,user) =>
+          if err
+            console.error err
+            return
+          if !(@id in user.votes)
+            user.votes.push(@id)
+          users.save user, =>
+            emit 'voted',
+              id: @id
+              client_id: client.id
+
+    at unvote: ->
+      if client.id
+        users.get client.id,(err,user) =>
+          if err
+            console.error err
+            return
+          if (@id in user.votes)
+            user.votes = _(user.votes).without(@id)
+          users.save user, =>
+            emit 'unvoted',
+              id: @id
+              client_id: client.id
+            console.log user
 
     client '/index.js': ->
       connect()
+      $().ready ->
+        if window.location.hash != ''
+          hash =
+            if window.location.hash[0..0] == '#'
+              window.location.hash[1...]
+            else
+              window.location.hash
+          emit 'authorize',token: hash
+          window.location.hash = ''
+        $('button').click ->
+          emit 'vote', id: 1
+          #emit 'unvote', id: 1
 
-      at said: ->
-        $('#panel').append "<p>#{@nickname} said: #{@text}</p>"
 
+      at voted: ->
+        console.log "Voted! #{@client_id} voted for #{@id}"
+      at unvoted: ->
+        console.log "Unvoted! #{@client_id} voted for #{@id}"
+      at authorized: ->
+        console.log "I've voted for!",@votes
 
-      $('button').click ->
-        emit 'said', text: $('#box').val()
-        $('#box').val('').focus()
 
 
     view index: ->
@@ -179,7 +270,7 @@ db.open (err,db) ->
             result += member + " | " for member in team.names[...-1]
             result += team.names[-1..][0]
             result
-      
+
       html ->
         head ->
           title 'PennApps Voting'
