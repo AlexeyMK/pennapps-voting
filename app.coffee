@@ -154,7 +154,15 @@ db.open (err,db) ->
     get '/': ->
 
       teams.all (err,t) =>
-        @teams = t
+        shuffle = (input) ->
+          swap  = (input, x,  y) -> [input[x], input[y]] = [input[y], input[x]]
+          rand  = (x) -> Math.floor(Math.random() * x)
+          permute = (input) -> swap(input, i, rand(i)) for i in [input.length-1..1]
+
+          permute input
+          return input
+
+        @teams = shuffle(t)
         render 'index', layout: no
 
     get '/auth': ->
