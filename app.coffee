@@ -103,7 +103,7 @@ db.open (err,db) ->
             return
           if !(@id in user.votes)
             user.votes.push(@id)
-            teams.get @id,(team) ->
+            teams.get @id,(err,team) ->
                 team.votes++
                 teams.save team
           users.save user, =>
@@ -119,7 +119,7 @@ db.open (err,db) ->
             return
           if (@id in user.votes)
             user.votes = _(user.votes).without(@id)
-            teams.get @id,(team) ->
+            teams.get @id,(err,team) ->
                 team.votes--
                 teams.save team
           users.save user, =>
