@@ -168,7 +168,7 @@ db.open (err,db) ->
     get '/auth': ->
       redirect fb.getAuthorizeUrl
         client_id: appid
-        redirect_uri: 'http://http://vote.2011f.pennapps.com/auth2'
+        redirect_uri: 'http://vote.2011f.pennapps.com/auth2'
         scope: 'email, user_education_history'
 
     get '/auth2': ->
@@ -236,6 +236,34 @@ db.open (err,db) ->
 
     client '/index.js': ->
       connect()
+      prompt_post = (name) ->
+         window.fbAsyncInit = () ->
+            FB.init({appId:'151280421549911',status: true,cookie: true, xfbml: true});
+            FB.ui(publish, null);
+            do ->
+                e = document.createElement('script')
+                e.async = true
+                e.src = document.location.protocol +
+                    '//connect.facebook.net/en_US/all.js'
+                document.getElementById('fb-root').appendChild(e)
+
+            publish =
+              method: 'stream.publish'
+              message: 'Just voted for '+name+' as my favorite PennApp - what\'s your\ s?'
+              attachment:
+                name: 'Vote for Best PennApp'
+                caption: 'Vote before Midnight on Sunday'
+                description: 'Over the last 40 hours, students built cool apps around data.  Now, it\'s time to choose a favorite.'
+                href: 'http://pennapps.com/vote'
+                media: [
+                    type: 'image'
+                    href: 'http://www.pennapps.com/vote'
+                    src: 'http://www.pennapps.com/img/pennapps_new_logo.jpg'
+                    ]
+              action_links: [text: 'Vote Now', href: 'http://www.pennapps.com/vote']
+              user_prompt_message: 'Wish your team luck'
+
+
       $().ready ->
         if window.location.hash != ''
           hash =
@@ -247,8 +275,9 @@ db.open (err,db) ->
           window.location.hash = ''
       window.vote_for = (team) ->
         emit 'vote', id: team
-
-        $(".vote_#{team}").attr('src','/tick_32.png').attr('onclick','').unbind('click').click do (team) -> () ->
+        node = $(".vote_#{team}")
+        prompt_post node.data('name')
+        node.attr('src','/tick_32.png').attr('onclick','').unbind('click').click do (team) -> () ->
             window.unvote(team)
 
       window.unvote = (team) ->
@@ -288,6 +317,7 @@ db.open (err,db) ->
             img
               src: 'checkbox_empty.png'
               name:'vote_tick'
+              'data-name': team.name
               width: '40'
               height: '40px'
               onclick: "vote_for('#{team.id}')"
@@ -307,12 +337,14 @@ db.open (err,db) ->
           script src: '/zappa/jquery.js'
           script src: '/zappa/zappa.js'
           script src: '/jquery.colorbox-min.js'
+          script src: 'http://connect.facebook.net/en_US/all.js'
           script src: '/index.js'
 
           link
             rel: 'stylesheet'
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
         body ->
+          div id: "fb-root"
           div class: "container", ->
             div class: "header", ->
               img src: "http://2011f.pennapps.com/storage/newest_logo.png"
