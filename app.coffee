@@ -16,8 +16,106 @@ db.open (err,db) ->
   teams = id_accessible 'teams'
 
   #db.collection 'users',(err,collection) -> users = collection
-  users.save({id:0,user:'Me!'})
-  users.get(0,(err,obj) -> console.log obj)
+  teams.save
+    id: 0
+    names: ['Jim Grandpre','Alexey Komissarouk']
+    url: 'www.url.com'
+    video: "http://www.youtube.com/embed/1Ek4QaFQ1qo"
+    description: 'This is my app!'
+
+  teams.save
+    id: 1
+    names: ['Tim Lastname','Ayaka Firstname']
+    url: 'www.link.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'This is their app!'
+
+  teams.save
+    id: 2
+    names: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
+    url: 'www.website.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'Yet more application code produced by hacking hackery hacker hacks.'
+
+  teams.save
+    id: 3
+    names: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
+    url: 'www.xkcd.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'Webcomics appropriately represented'
+
+  teams.save
+    id: 4
+    names: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
+    url: 'www.alexeymk.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'This is a list of things which make me rather irate'
+
+  teams.save
+    id: 5
+    names: ['Four Score','And Seven','Years Ago']
+    url: 'www.constitution.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'Governmental refrences tickle my fancy'
+
+  teams.save
+    id: 6
+    names: ['Presnted With','Much Elequonce','Product Sucked']
+    url: 'www.whartoniteseekscodemonkey.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'Fantastically useless in every possible way.'
+
+  teams.save
+    id: 7
+    names: ['Jim Grandpre','Alexey Komissarouk']
+    url: 'www.url.com'
+    video: "http://www.youtube.com/embed/1Ek4QaFQ1qo"
+    description: 'This is my app!'
+
+  teams.save
+    id: 8
+    names: ['Tim Lastname','Ayaka Firstname']
+    url: 'www.link.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'This is their app!'
+
+  teams.save
+    id: 9
+    names: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
+    url: 'www.website.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'Yet more application code produced by hacking hackery hacker hacks.'
+
+  teams.save
+    id: 10
+    names: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
+    url: 'www.xkcd.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'Webcomics appropriately represented'
+
+  teams.save
+    id: 11
+    names: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
+    url: 'www.alexeymk.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'This is a list of things which make me rather irate'
+
+  teams.save
+    id: 12
+    names: ['Four Score','And Seven','Years Ago']
+    url: 'www.constitution.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'Governmental refrences tickle my fancy'
+
+  teams.save
+    id: 13
+    names: ['Presnted With','Much Elequonce','Product Sucked']
+    url: 'www.whartoniteseekscodemonkey.com'
+    video: "http://www.youtube.com/embed/BnDH-RXCptY"
+    description: 'Fantastically useless in every possible way.'
+
+
+
 
 
 
