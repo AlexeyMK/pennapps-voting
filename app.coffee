@@ -34,9 +34,6 @@ db.open (err,db) ->
     def users: users
     def teams: teams
 
-    #teams.all((err,t) -> console.log t)
-    #teams.get(0,(err,t) -> console.log t)
-
     def secure_association_dictionary: {}
 
     #db.collection 'users',(err,collection) -> users = collection
@@ -256,8 +253,6 @@ db.open (err,db) ->
       at authorized: ->
         console.log "I've voted for!",@votes
 
-
-
     view index: ->
       doctype 5
 
@@ -282,8 +277,8 @@ db.open (err,db) ->
             team.description
           p class:'team_members', ->
             result = ""# I know, adding to a string is bad.
-            result += member + " | " for member in team.names[...-1]
-            result += team.names[-1..][0]
+            result += member + " | " for member in team.team_members[...-1]
+            result += team.team_members[-1..][0]
             result
 
       html ->
