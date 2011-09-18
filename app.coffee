@@ -293,6 +293,7 @@ db.open (err,db) ->
               window.location.hash
           emit 'authorize',token: hash
           window.location.hash = ''
+          $('.loading').show()
       window.vote_for = (team) ->
         emit 'vote', id: team
         node = $(".vote_#{team}")
@@ -316,6 +317,7 @@ db.open (err,db) ->
         #console.log "Unvoted! #{@client_id} voted for #{@id}"
       at authorized: ->
         $('.vote_for').show()
+        $('.auth').hide()
         for v in @votes
           $(".vote_#{v}").click()
 
@@ -373,8 +375,12 @@ db.open (err,db) ->
             div class: "explanation", ->
               p "Vote for your favorite applications and help decide the PennApps 2011 Student Choice Award Winner, sponsored by First Round Capital and in partnership with the Undergraduate Assembly."
               p "Feel free to vote for as many teams as you like."
-            a href: "/auth", ->
+            a href: "/auth",class: "auth", ->
               img src: 'fb.png'
+              img
+                src: 'loading.gif'
+                style: 'display: none;'
+                class: 'loading'
             section id:'grid-system', ->
               for row in [0..@teams.length/3 + 1] #off by one error here?
                  div class:'row show-grid', ->
