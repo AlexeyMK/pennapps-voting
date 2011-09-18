@@ -11,7 +11,9 @@ db.open (err,db) ->
     get: (id,cb) ->
       db.collection type,(err,collection) ->
         collection.findOne(id:id,cb)
-
+    all: (cb) ->
+      db.collection type,(err,collection) ->
+        collection.find().toArray(cb)
   users = id_accessible 'users'
   teams = id_accessible 'teams'
 
@@ -116,6 +118,8 @@ db.open (err,db) ->
 
 
 
+
+  teams.all((err,obj) -> console.log obj)
 
 
 
