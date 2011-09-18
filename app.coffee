@@ -249,10 +249,9 @@ db.open (err,db) ->
             window.vote_for(team)
 
       window.show_video = (url) -> $.colorbox
-        html: """<iframe class="youtube-player" type="text/html" width="640" height="385" src="#{url}" frameborder="0">
-</iframe>"""
-
-        transition:'fade'
+        transition: "fade"
+        html: """<div><iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/#{url}" frameborder="0">
+</iframe></div>"""
 
       at voted: ->
         #console.log "Voted! #{@client_id} voted for #{@id}"
@@ -269,12 +268,12 @@ db.open (err,db) ->
       team_div = (team) ->
         div class: 'team span-one-third', ->
           a href: team.url, ->
-            h3 "Team Name goes Here"
+            h3 team.name
           a onclick: "show_video('#{team.video}')", ->
             img
               width: 300
               height: 225
-              src: 'http://img.youtube.com/vi/EqWRZrupLrI/0.jpg'#eventually: team.video
+              src: "http://img.youtube.com/vi/#{team.video}/0.jpg"
               frameborder: 0
           div class: 'vote_for', style: 'float: right;display: none;', ->
             p "Vote"
@@ -312,6 +311,6 @@ db.open (err,db) ->
             a href: "/auth", ->
                 "Connect with Facebook to vote!"
             section id:'grid-system', ->
-              for row in [0,1] #@teams.length / 3 in real world
+              for row in [0..@teams.length/3 + 1] #off by one error here?
                  div class:'row show-grid', ->
                   team_div t for t in @teams[row*3..row*3+2]
