@@ -35,7 +35,6 @@ db.open (err,db) ->
 
     def secure_association_dictionary: {}
     get '/': ->
-
       teams.all (err,t) =>
         shuffle = (input) ->
           swap  = (input, x,  y) -> [input[x], input[y]] = [input[y], input[x]]
@@ -47,6 +46,12 @@ db.open (err,db) ->
 
         @teams = shuffle(t)
         render 'index', layout: no
+
+    get '/admin-jim-made-this-url': ->
+      teams.all (err,t) =>
+        @teams = t
+        render 'admin', layout: no
+
 
     get '/auth': ->
       redirect fb.getAuthorizeUrl
@@ -254,3 +259,21 @@ db.open (err,db) ->
               for row in [0..@teams.length/3 + 1] #off by one error here?
                  div class:'row show-grid', ->
                   team_div t for t in @teams[row*3..row*3+2]
+    view admin: ->
+      doctype 5
+      team_row = (team) ->
+        tr ->
+            td ->
+                team.name
+            td ->
+                team.votes + ''
+      html ->
+        head ->
+          title 'PennApps Admin'
+          link
+            rel: 'stylesheet'
+            href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
+        body ->
+          table ->
+            for t in @teams
+              team_row t
