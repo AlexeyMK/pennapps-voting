@@ -168,11 +168,11 @@ db.open (err,db) ->
     get '/auth': ->
       redirect fb.getAuthorizeUrl
         client_id: appid
-        redirect_uri: 'http://localhost:3000/auth2'
+        redirect_uri: 'http://http://vote.2011f.pennapps.com/auth2'
         scope: 'email, user_education_history'
 
     get '/auth2': ->
-      fb.getAccessToken appid,secret,@code,'http://localhost:3000/auth2',
+      fb.getAccessToken appid,secret,@code,'http://vote.2011f.pennapps.com/auth2',
         (err,access_token, refresh_token) =>
           cl = fbapi.user(access_token)
           cl.me.info (err,data) ->
