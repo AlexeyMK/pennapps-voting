@@ -314,11 +314,15 @@ db.open (err,db) ->
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
         body ->
           div class: "container", ->
-            img src: "http://2011f.pennapps.com/storage/newest_logo.png"
-            img src: "http://2011f.pennapps.com/storage/First-round-capital-logo.jpeg?__SQUARESPACE_CACHEVERSION=1315019808345"
-            img src: 'pennua.jpg'
+            div class: "header", ->
+              img src: "http://2011f.pennapps.com/storage/newest_logo.png"
+              img src: "http://2011f.pennapps.com/storage/First-round-capital-logo.jpeg?__SQUARESPACE_CACHEVERSION=1315019808345"
+              img src: 'pennua.jpg'
+            div class: "explanation", ->
+              p "Vote for your favorite applications and help decide the PennApps 2011 Student Choice Award Winner, sponsored by First Round Capital and in partnership with the Undergraduate Assembly."
+              p "Feel free to vote for as many teams as you like."
             a href: "/auth", ->
-                "Connect with Facebook to vote!"
+              "Connect with Facebook to vote!"
             section id:'grid-system', ->
               for row in [0..@teams.length/3 + 1] #off by one error here?
                  div class:'row show-grid', ->
