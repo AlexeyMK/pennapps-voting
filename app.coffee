@@ -3,6 +3,7 @@ db = new mongo.Db('test', new mongo.Server("127.0.0.1", 27017, {}))
 data = {}
 fb = require 'facebook-js'
 db.open (err,db) ->
+#  db.dropDatabase(() -> false)
   require('zappa') {db,fb},->
     use 'static'
     enable 'serve jquery'
