@@ -1,133 +1,141 @@
+
+
+
 mongo = require 'mongodb'
 db = new mongo.Db('test', new mongo.Server("127.0.0.1", 27017, {}))
-
 data = {}
 
 db.open (err,db) ->
-  id_accessible = (type) ->
-    save: (obj) ->
-      db.collection type,(err,collection) ->
-         collection.insert(obj)
-    get: (id,cb) ->
-      db.collection type,(err,collection) ->
-        collection.findOne(id:id,cb)
-    all: (cb) ->
-      db.collection type,(err,collection) ->
-        collection.find().toArray(cb)
-  users = id_accessible 'users'
-  teams = id_accessible 'teams'
-
-  #db.collection 'users',(err,collection) -> users = collection
-  teams.save
-    id: 0
-    names: ['Jim Grandpre','Alexey Komissarouk']
-    url: 'www.url.com'
-    video: "http://www.youtube.com/embed/1Ek4QaFQ1qo"
-    description: 'This is my app!'
-
-  teams.save
-    id: 1
-    names: ['Tim Lastname','Ayaka Firstname']
-    url: 'www.link.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'This is their app!'
-
-  teams.save
-    id: 2
-    names: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
-    url: 'www.website.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'Yet more application code produced by hacking hackery hacker hacks.'
-
-  teams.save
-    id: 3
-    names: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
-    url: 'www.xkcd.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'Webcomics appropriately represented'
-
-  teams.save
-    id: 4
-    names: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
-    url: 'www.alexeymk.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'This is a list of things which make me rather irate'
-
-  teams.save
-    id: 5
-    names: ['Four Score','And Seven','Years Ago']
-    url: 'www.constitution.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'Governmental refrences tickle my fancy'
-
-  teams.save
-    id: 6
-    names: ['Presnted With','Much Elequonce','Product Sucked']
-    url: 'www.whartoniteseekscodemonkey.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'Fantastically useless in every possible way.'
-
-  teams.save
-    id: 7
-    names: ['Jim Grandpre','Alexey Komissarouk']
-    url: 'www.url.com'
-    video: "http://www.youtube.com/embed/1Ek4QaFQ1qo"
-    description: 'This is my app!'
-
-  teams.save
-    id: 8
-    names: ['Tim Lastname','Ayaka Firstname']
-    url: 'www.link.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'This is their app!'
-
-  teams.save
-    id: 9
-    names: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
-    url: 'www.website.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'Yet more application code produced by hacking hackery hacker hacks.'
-
-  teams.save
-    id: 10
-    names: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
-    url: 'www.xkcd.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'Webcomics appropriately represented'
-
-  teams.save
-    id: 11
-    names: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
-    url: 'www.alexeymk.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'This is a list of things which make me rather irate'
-
-  teams.save
-    id: 12
-    names: ['Four Score','And Seven','Years Ago']
-    url: 'www.constitution.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'Governmental refrences tickle my fancy'
-
-  teams.save
-    id: 13
-    names: ['Presnted With','Much Elequonce','Product Sucked']
-    url: 'www.whartoniteseekscodemonkey.com'
-    video: "http://www.youtube.com/embed/BnDH-RXCptY"
-    description: 'Fantastically useless in every possible way.'
-
-
-
-
-  teams.all((err,obj) -> console.log obj)
-
-
-
-  require('zappa') ->
+  require('zappa') {db},->
     enable 'serve jquery'
 
+    class id_accessible
+      constructor: (@type) ->
+      save: (obj) ->
+#        console.log @type
+        db.collection @type,(err,collection) ->
+          collection.insert(obj)
+      get: (id,cb) ->
+        console.log @type
+        db.collection @type,(err,collection) ->
+          collection.findOne(id:id,cb)
+      all: (cb) ->
+        db.collection @type,(err,collection) ->
+          collection.find().toArray(cb)
+
+    users = new id_accessible 'users'
+    teams = new id_accessible 'teams'
+    def users: users
+    def teams: teams
+
+    #teams.all((err,t) -> console.log t)
+    #teams.get(0,(err,t) -> console.log t)
+
+    #db.collection 'users',(err,collection) -> users = collection
+    teams.save
+      id: 0
+      names: ['Jim Grandpre','Alexey Komissarouk']
+      url: 'www.url.com'
+      video: "http://www.youtube.com/embed/1Ek4QaFQ1qo"
+      description: 'This is my app!'
+
+    teams.save
+      id: 1
+      names: ['Tim Lastname','Ayaka Firstname']
+      url: 'www.link.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'This is their app!'
+
+    teams.save
+      id: 2
+      names: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
+      url: 'www.website.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'Yet more application code produced by hacking hackery hacker hacks.'
+
+    teams.save
+      id: 3
+      names: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
+      url: 'www.xkcd.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'Webcomics appropriately represented'
+
+    teams.save
+      id: 4
+      names: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
+      url: 'www.alexeymk.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'This is a list of things which make me rather irate'
+
+    teams.save
+      id: 5
+      names: ['Four Score','And Seven','Years Ago']
+      url: 'www.constitution.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'Governmental refrences tickle my fancy'
+
+    teams.save
+      id: 6
+      names: ['Presnted With','Much Elequonce','Product Sucked']
+      url: 'www.whartoniteseekscodemonkey.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'Fantastically useless in every possible way.'
+
+    teams.save
+      id: 7
+      names: ['Jim Grandpre','Alexey Komissarouk']
+      url: 'www.url.com'
+      video: "http://www.youtube.com/embed/1Ek4QaFQ1qo"
+      description: 'This is my app!'
+
+    teams.save
+      id: 8
+      names: ['Tim Lastname','Ayaka Firstname']
+      url: 'www.link.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'This is their app!'
+
+    teams.save
+      id: 9
+      names: ['Ellen Yusti','Ellen Somebody','Forth Right','Questionable Content']
+      url: 'www.website.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'Yet more application code produced by hacking hackery hacker hacks.'
+
+    teams.save
+      id: 10
+      names: ['Sunday Morning','Breakfast Cerial','Randal Munroe','Other Guy']
+      url: 'www.xkcd.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'Webcomics appropriately represented'
+
+    teams.save
+      id: 11
+      names: ['Website Owners','Who Repeat','Poor Paridigns','Anger Alexey']
+      url: 'www.alexeymk.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'This is a list of things which make me rather irate'
+
+    teams.save
+      id: 12
+      names: ['Four Score','And Seven','Years Ago']
+      url: 'www.constitution.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'Governmental refrences tickle my fancy'
+
+    teams.save
+      id: 13
+      names: ['Presnted With','Much Elequonce','Product Sucked']
+      url: 'www.whartoniteseekscodemonkey.com'
+      video: "http://www.youtube.com/embed/BnDH-RXCptY"
+      description: 'Fantastically useless in every possible way.'
+
+
     get '/': ->
-      render 'index', layout: no
+      teams.all (err,t) =>
+        @teams = t
+        console.log @teams
+        render 'index', layout: no
 
     at 'set nickname': ->
       client.nickname = @nickname
@@ -141,8 +149,6 @@ db.open (err,db) ->
       at said: ->
         $('#panel').append "<p>#{@nickname} said: #{@text}</p>"
 
-      $().ready ->
-        emit 'set nickname', nickname: prompt('Pick a nickname')
 
       $('button').click ->
         emit 'said', text: $('#box').val()
@@ -158,6 +164,9 @@ db.open (err,db) ->
           script src: '/zappa/zappa.js'
           script src: '/index.js'
         body ->
+          section ->
+            p 'hello'
+            p t.id for t in @teams
           div id: 'panel'
           input id: 'box'
           button 'Send'
