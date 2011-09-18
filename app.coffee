@@ -255,13 +255,13 @@ db.open (err,db) ->
         transition:'fade'
 
       at voted: ->
-        console.log "Voted! #{@client_id} voted for #{@id}"
+        #console.log "Voted! #{@client_id} voted for #{@id}"
       at unvoted: ->
-        console.log "Unvoted! #{@client_id} voted for #{@id}"
+        #console.log "Unvoted! #{@client_id} voted for #{@id}"
       at authorized: ->
-        console.log "I've voted for!",@votes
+        $('.vote_for').show()
         for v in @votes
-            $(".vote_#{v}").click()
+          $(".vote_#{v}").click()
 
     view index: ->
       doctype 5
@@ -276,7 +276,7 @@ db.open (err,db) ->
               height: 225
               src: 'http://img.youtube.com/vi/EqWRZrupLrI/0.jpg'#eventually: team.video
               frameborder: 0
-          div id: 'vote_for', style: 'float: right;', ->
+          div class: 'vote_for', style: 'float: right;display: none;', ->
             p "Vote"
             img
               src: 'checkbox_empty.png'
