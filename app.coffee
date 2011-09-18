@@ -314,8 +314,9 @@ db.open (err,db) ->
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
         body ->
           div class: "container", ->
-            h1 "PennApps Voting, Logo goes here"
-            h2 "img src goes here for for FRC, UA"
+            img src: "http://2011f.pennapps.com/storage/newest_logo.png"
+            img src: "http://2011f.pennapps.com/storage/First-round-capital-logo.jpeg?__SQUARESPACE_CACHEVERSION=1315019808345"
+            img src: 'pennua.jpg'
             a href: "/auth", ->
                 "Connect with Facebook to vote!"
             section id:'grid-system', ->
