@@ -322,7 +322,7 @@ db.open (err,db) ->
               p "Vote for your favorite applications and help decide the PennApps 2011 Student Choice Award Winner, sponsored by First Round Capital and in partnership with the Undergraduate Assembly."
               p "Feel free to vote for as many teams as you like."
             a href: "/auth", ->
-              "Connect with Facebook to vote!"
+              img src: 'fb.png'
             section id:'grid-system', ->
               for row in [0..@teams.length/3 + 1] #off by one error here?
                  div class:'row show-grid', ->
