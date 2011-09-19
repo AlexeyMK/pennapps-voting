@@ -103,7 +103,8 @@ db.open (err,db) ->
             return
           if !(@id in user.votes)
             user.votes.push(@id)
-            teams.get @id,(err,team) ->
+            teams.get @id,(err,team) =>
+                console.log @id
                 team.votes++
                 teams.save team
           users.save user, =>
@@ -204,8 +205,6 @@ db.open (err,db) ->
             h3 team.name
           a onclick: "show_video('#{team.video}')", ->
             img
-              width: 300
-              height: 225
               src: "http://img.youtube.com/vi/#{team.video}/0.jpg"
               frameborder: 0
           div class: 'vote_for', style: 'float: right;display: none;', ->
@@ -215,14 +214,14 @@ db.open (err,db) ->
               name:'vote_tick'
               'data-name': team.name
               width: '40'
-              height: '40px'
+              height: '40'
               onclick: "vote_for('#{team.id}')"
               class: "vote_#{team.id}"
           p class: 'description', ->
             team.description
           p class:'team_members', ->
             result = ""# I know, adding to a string is bad.
-            result += member + " | " for member in team.team_members[...-1]
+            result += member + ", " for member in team.team_members[...-1]
             result += team.team_members[-1..][0]
             result
 
@@ -239,6 +238,10 @@ db.open (err,db) ->
           link
             rel: 'stylesheet'
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
+          link
+            rel: 'stylesheet'
+            href:"style.css"
+
         body ->
           div id: "fb-root"
           div class: "container", ->
@@ -270,6 +273,9 @@ db.open (err,db) ->
       html ->
         head ->
           title 'PennApps Admin'
+          link
+            rel: 'stylesheet'
+            href:"style.css"
           link
             rel: 'stylesheet'
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
