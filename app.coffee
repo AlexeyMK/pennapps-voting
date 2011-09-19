@@ -217,7 +217,7 @@ db.open (err,db) ->
               class: "vote_#{team.id}"
           p class: 'description', ->
             team.description
-          p class:'team_members', ->
+          p style:'display:none', class:'team_members', ->
             result = ""# I know, adding to a string is bad.
             result += member + ", " for member in team.team_members[...-1]
             result += team.team_members[-1..][0]
@@ -252,8 +252,8 @@ db.open (err,db) ->
               img src: "http://2011f.pennapps.com/storage/First-round-capital-logo.jpeg?__SQUARESPACE_CACHEVERSION=1315019808345"
               img src: 'pennua.jpg'
             div class: "explanation", ->
-              p "Vote for your favorite applications and help decide the PennApps 2011 Student Choice Award Winner, sponsored by First Round Capital and in partnership with the Undergraduate Assembly."
-              p "Feel free to vote for as many teams as you like."
+              p "Watch the demos, look at the sites, and choose your favorite applications to help decide the PennApps 2011 Student Choice Award Winner. Feel free to vote for as many teams as you like."
+              p "<small>Confused? <a href='http://2011f.pennapps.com/'>Learn about PennApps...</a></small>"
             a href: "/auth",class: "auth", ->
               img src: 'fb.png'
               img
