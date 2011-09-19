@@ -133,8 +133,8 @@ db.open (err,db) ->
       connect()
       prompt_post = (name) ->
          window.fbAsyncInit = () ->
-            FB.init({appId:'151280421549911',status: true,cookie: true, xfbml: true});
-            FB.ui(publish, null);
+            FB.init({appId:'151280421549911',status: true,cookie: true, xfbml: true})
+            FB.ui(publish, null)
             do ->
                 e = document.createElement('script')
                 e.async = true
@@ -160,6 +160,10 @@ db.open (err,db) ->
 
 
       $().ready ->
+        $('.video_colorbox').colorbox
+          iframe: true
+          innerWidth: 640
+          innerHeight: 480
         if window.location.hash != ''
           hash =
             if window.location.hash[0..0] == '#'
@@ -181,11 +185,6 @@ db.open (err,db) ->
         $(".vote_#{team}").attr('src','/checkbox_empty.png').unbind('click').click do (team) -> () ->
             window.vote_for(team)
 
-      window.show_video = (url) -> $.colorbox
-        transition: "fade"
-        html: """<div><iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/#{url}" frameborder="0">
-</iframe></div>"""
-
       at voted: ->
         #console.log "Voted! #{@client_id} voted for #{@id}"
       at unvoted: ->
@@ -203,9 +202,13 @@ db.open (err,db) ->
         div class: 'team span-one-third', ->
           a href: team.url, ->
             h3 team.name
-          a onclick: "show_video('#{team.video}')", ->
+          a {class: "video_colorbox cboxElement", href:"http://www.youtube.com/embed/#{team.video}?rel=0&wmode=transparent"}, ->
+  #onclick: "show_video('#{team.video}')", ->
             img
-              src: "http://img.youtube.com/vi/#{team.video}/0.jpg"
+              style: "background:url('http://src.sencha.io/260/195/http://img.youtube.com/vi/#{team.video}/0.jpg');"
+              width: '260'
+              height: '195'
+              src: 'play_overlay.png'
               frameborder: 0
           div class: 'vote_for', style: 'float: right;display: none;', ->
             p "Vote"
@@ -228,19 +231,23 @@ db.open (err,db) ->
       html ->
         head ->
           title 'PennApps Voting'
-          script src: '/socket.io/socket.io.js'
-          script src: '/zappa/jquery.js'
-          script src: '/zappa/zappa.js'
-          script src: '/jquery.colorbox-min.js'
-          script src: 'http://connect.facebook.net/en_US/all.js'
-          script src: '/index.js'
-
           link
             rel: 'stylesheet'
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
           link
             rel: 'stylesheet'
             href:"style.css"
+          #TEMP - hotlinked
+          link
+            rel: 'stylesheet'
+            href: "colorbox.css"
+          script src: '/socket.io/socket.io.js'
+          script src: '/zappa/jquery.js'
+          script src: '/jquery.colorbox-min.js'
+          script src: '/zappa/zappa.js'
+          script src: 'http://connect.facebook.net/en_US/all.js'
+          script src: '/index.js'
+
 
         body ->
           div id: "fb-root"
