@@ -70,12 +70,12 @@ db.open (err,db) ->
             console.log data
             is_student = /.edu$/.test(data.email)
             for s in data.education
-                if s.type == 'College'
-                    if s.year? and s.year.name? and s.year.name > 2011
-                        is_student = true
+              if s.type == 'College'
+                if s.year? and s.year.name? and s.year.name > 2011
+                  is_student = true
             secure_association_dictionary[token] =
-                id: data.id
-                is_student: is_student
+              id: data.id
+              is_student: is_student
             redirect "/##{token}"
 
     at authorize: ->
@@ -103,10 +103,6 @@ db.open (err,db) ->
             return
           if !(@id in user.votes)
             user.votes.push(@id)
-            teams.get @id,(err,team) =>
-                console.log @id
-                team.votes++
-                teams.save team
           users.save user, =>
             emit 'voted',
               id: @id
@@ -120,9 +116,6 @@ db.open (err,db) ->
             return
           if (@id in user.votes)
             user.votes = _(user.votes).without(@id)
-            teams.get @id,(err,team) ->
-                team.votes--
-                teams.save team
           users.save user, =>
             emit 'unvoted',
               id: @id
@@ -131,32 +124,32 @@ db.open (err,db) ->
 
     client '/index.js': ->
       connect()
-      prompt_post = (name) ->
-         window.fbAsyncInit = () ->
-            FB.init({appId:'151280421549911',status: true,cookie: true, xfbml: true})
-            FB.ui(publish, null)
-            do ->
-                e = document.createElement('script')
-                e.async = true
-                e.src = document.location.protocol +
-                    '//connect.facebook.net/en_US/all.js'
-                document.getElementById('fb-root').appendChild(e)
+      window.fbAsyncInit = () ->
+        FB.init({appId:'151280421549911',status: true,cookie: true, xfbml: true})
+        do ->
+            e = document.createElement('script')
+            e.async = true
+            e.src = document.location.protocol +
+                '//connect.facebook.net/en_US/all.js'
+            document.getElementById('fb-root').appendChild(e)
 
-            publish =
-              method: 'stream.publish'
-              message: 'Just voted for '+name+' as my favorite PennApp - what\'s your\ s?'
-              attachment:
-                name: 'Vote for Best PennApp'
-                caption: 'Vote before Midnight on Sunday'
-                description: 'Over the last 40 hours, students built cool apps around data.  Now, it\'s time to choose a favorite.'
-                href: 'http://pennapps.com/vote'
-                media: [
-                    type: 'image'
-                    href: 'http://www.pennapps.com/vote'
-                    src: 'http://www.pennapps.com/img/pennapps_new_logo.jpg'
-                    ]
-              action_links: [text: 'Vote Now', href: 'http://www.pennapps.com/vote']
-              user_prompt_message: 'Wish your team luck'
+      window.prompt_post = (name) ->
+        publish =
+          method: 'stream.publish'
+          message: "Just voted for #{name} as my favorite PennApp - what\'s your\ s?" # this has become deprecated, which makes me sad
+          attachment:
+            name: 'Vote for Best PennApp'
+            caption: 'Vote before Midnight on Sunday'
+            description: 'Over the last 40 hours, students built cool apps around data.  Now, it\'s time to choose a favorite.'
+            href: 'http://pennapps.com/vote'
+            media: [
+                type: 'image'
+                href: 'http://www.pennapps.com/vote'
+                src: 'http://www.pennapps.com/img/pennapps_new_logo.jpg'
+                ]
+          action_links: [text: 'Vote Now', href: 'http://www.pennapps.com/vote']
+          user_prompt_message: 'Wish your team luck'
+        FB.ui(publish, null)
 
 
       $().ready ->
@@ -176,7 +169,9 @@ db.open (err,db) ->
       window.vote_for = (team) ->
         emit 'vote', id: team
         node = $(".vote_#{team}")
-        prompt_post node.data('name')
+        #prompt_post node.data('name')
+        #Facebook deprecated prefilling messages, so we have to be 
+        #smarter about this. Any ideas?
         node.attr('src','/tick_32.png').attr('onclick','').unbind('click').click do (team) -> () ->
             window.unvote(team)
 
@@ -202,7 +197,7 @@ db.open (err,db) ->
         div class: 'team span-one-third', ->
           a href: team.url, ->
             h3 team.name
-          a {class: "video_colorbox cboxElement", href:"http://www.youtube.com/embed/#{team.video}?rel=0&wmode=transparent"}, ->
+          a {class: "video_colorbox cboxElement", href:"http://www.youtube.com/embed/#{team.video}?rel=0&wmode=transparent&autoplay=1"}, ->
   #onclick: "show_video('#{team.video}')", ->
             img
               style: "background:url('http://src.sencha.io/260/195/http://img.youtube.com/vi/#{team.video}/0.jpg');"
