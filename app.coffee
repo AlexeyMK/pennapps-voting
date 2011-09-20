@@ -48,10 +48,15 @@ db.open (err,db) ->
         render 'index', layout: no
 
     get '/admin-jim-made-this-url': ->
-      teams.all (err,t) =>
-        @teams = t
+      @teams_by_vote = {}
+      users.all (err, users) =>
+        incr = (key) => @teams_by_vote[key] = (@teams_by_vote[key] or 0) + 1
+        for user in users
+          incr(vote) for vote in user.votes
+          
         render 'admin', layout: no
-
+      #teams.all (err,t) =>
+      #  @teams = t
 
     get '/auth': ->
       redirect fb.getAuthorizeUrl
@@ -264,12 +269,12 @@ db.open (err,db) ->
                   team_div t for t in @teams[row*3..row*3+2]
     view admin: ->
       doctype 5
-      team_row = (team) ->
+      team_row = (name, votes) ->
         tr ->
             td ->
-                team.name
+                name
             td ->
-                team.votes + ''
+                votes + ''
       html ->
         head ->
           title 'PennApps Admin'
@@ -281,5 +286,5 @@ db.open (err,db) ->
             href: "http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"
         body ->
           table ->
-            for t in @teams
-              team_row t
+            for name, vote of @teams_by_vote
+              team_row name, vote
