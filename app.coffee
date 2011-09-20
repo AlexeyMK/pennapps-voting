@@ -157,6 +157,7 @@ db.open (err,db) ->
           iframe: true
           innerWidth: 640
           innerHeight: 480
+
         if window.location.hash != ''
           hash =
             if window.location.hash[0..0] == '#'
@@ -206,7 +207,6 @@ db.open (err,db) ->
               src: 'play_overlay.png'
               frameborder: 0
           div class: 'vote_for', style: 'float: right;display: none;', ->
-            p "Vote"
             img
               src: 'checkbox_empty.png'
               name:'vote_tick'
@@ -217,11 +217,6 @@ db.open (err,db) ->
               class: "vote_#{team.id}"
           p class: 'description', ->
             team.description
-          p style:'display:none', class:'team_members', ->
-            result = ""# I know, adding to a string is bad.
-            result += member + ", " for member in team.team_members[...-1]
-            result += team.team_members[-1..][0]
-            result
 
       html ->
         head ->
@@ -254,12 +249,15 @@ db.open (err,db) ->
             div class: "explanation", ->
               p "Watch the demos, look at the sites, and choose your favorite applications to help decide the PennApps 2011 Student Choice Award Winner. Feel free to vote for as many teams as you like."
               p "<small>Confused? <a href='http://2011f.pennapps.com/'>Learn about PennApps...</a></small>"
-            a href: "/auth",class: "auth", ->
-              img src: 'fb.png'
-              img
-                src: 'loading.gif'
-                style: 'display: none;'
-                class: 'loading'
+            div class: "auth", ->
+              p "Log in to be eligible to vote"
+              a href: "/auth", ->
+                img src: 'fb.png'
+                img
+                  src: 'loading.gif'
+                  style: 'display: none;'
+                  class: 'loading'
+              
             section id:'grid-system', ->
               for row in [0..@teams.length/3 + 1] #off by one error here?
                  div class:'row show-grid', ->
