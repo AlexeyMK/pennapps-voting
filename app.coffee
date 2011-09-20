@@ -222,6 +222,7 @@ db.open (err,db) ->
               class: "vote_#{team.id}"
           p class: 'description', ->
             team.description
+          p class: 'app_link', -> a href: team.url, -> "View App" if team.url isnt ""
 
       html ->
         head ->
