@@ -34,6 +34,37 @@ h4 {
     position: relative;
 }
 
+.winning_team {
+    background: #dedede;
+    min-height: 320px;
+    width: 900px;
+    padding: 20px 20px;
+    margin: 10px;
+    border-radius: 6px;
+    position: relative;
+}
+
+.winning_left {
+  float: left;
+}
+
+.winning_right {
+  float: left;
+  width: 270px;
+  padding-left: 20px;
+}
+
+h2 .winning_right {
+  line-height: 1; 
+}
+
+.winner_video_preview img {
+    width: 560px;
+    height: 315px;
+    margin: 0 auto 5px;
+    display: block;
+}
+
 .video_preview img {
     width: 260px;
     height: 195px;

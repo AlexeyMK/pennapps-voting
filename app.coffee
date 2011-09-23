@@ -201,6 +201,25 @@ db.open (err,db) ->
     view index: ->
       doctype 5
 
+      winning_team_div = (team) ->
+        div class:'row show-grid', ->
+          div class: 'winning_team span16', ->
+            div class: 'winning_left', ->
+              a {class: "video_colorbox cboxElement", href:"http://www.youtube.com/embed/#{team.video}?rel=0&wmode=transparent&autoplay=1"}, ->
+                img
+                  style: "background:url('http://img.youtube.com/vi/#{team.video}/0.jpg');"
+                  width: '560'
+                  height: '315'
+                  src: 'play_overlay_large.png'
+                  frameborder: 0
+            div class: 'winning_right', ->
+              a href: team.url, ->
+                h2 team.name
+                h3 team.prize #IE, "Winner of Student Choice Award"
+              p class: 'description', ->
+                team.description
+              p class: 'app_link', -> a href: team.url, -> "View App" if team.url isnt ""
+    
       team_div = (team) ->
         div class: 'team span-one-third', ->
           a href: team.url, ->
@@ -255,12 +274,11 @@ db.open (err,db) ->
               img src: "http://2011f.pennapps.com/storage/First-round-capital-logo.jpeg?__SQUARESPACE_CACHEVERSION=1315019808345"
               img src: 'pennua.jpg'
             div class: "explanation", ->
-              p "Voting is closed.  <br/> Winners for the PennApps 2011 Student Choice Award will be announced shortly."
+              p "Voting is closed.  <<br/> Winners for the PennApps 2011 Student Choice Award will be announced shortly."
               p "<small>Confused? <a href='http://2011f.pennapps.com/'>Learn about PennApps...</a></small>"
             section id:'grid-system', ->
-              for winner in @winning_teams 
-                div class:'row show-grid', ->
-                  team_div winner
+              for winner in @winning_teams
+                winning_team_div winner
               for row in [0..@rest_teams.length/3 + 1] #off by one error here?
                  div class:'row show-grid', ->
                   team_div t for t in @rest_teams[row*3..row*3+2]
