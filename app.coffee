@@ -36,6 +36,8 @@ db.open (err,db) ->
     def secure_association_dictionary: {}
     get '/': ->
       teams.all (err,t) =>
+        @winning_teams = (team for team in t when team.prestige > 0)
+ 
         shuffle = (input) ->
           swap  = (input, x,  y) -> [input[x], input[y]] = [input[y], input[x]]
           rand  = (x) -> Math.floor(Math.random() * x)
@@ -44,7 +46,7 @@ db.open (err,db) ->
           permute input
           return input
 
-        @teams = shuffle(t)
+        @rest_teams = (team for team in shuffle(t) when team.prestige is 0)
         render 'index', layout: no
 
     get '/admin-jim-made-this-url': ->
@@ -253,21 +255,15 @@ db.open (err,db) ->
               img src: "http://2011f.pennapps.com/storage/First-round-capital-logo.jpeg?__SQUARESPACE_CACHEVERSION=1315019808345"
               img src: 'pennua.jpg'
             div class: "explanation", ->
-              p "Watch the demos, look at the sites, and choose your favorite applications to help decide the PennApps 2011 Student Choice Award Winner. Feel free to vote for as many teams as you like."
+              p "Voting is closed.  <br/> Winners for the PennApps 2011 Student Choice Award will be announced shortly."
               p "<small>Confused? <a href='http://2011f.pennapps.com/'>Learn about PennApps...</a></small>"
-            div class: "auth", ->
-              p "Log in to be eligible to vote"
-              a href: "/auth", ->
-                img src: 'fb.png'
-                img
-                  src: 'loading.gif'
-                  style: 'display: none;'
-                  class: 'loading'
-              
             section id:'grid-system', ->
-              for row in [0..@teams.length/3 + 1] #off by one error here?
+              for winner in @winning_teams 
+                div class:'row show-grid', ->
+                  team_div winner
+              for row in [0..@rest_teams.length/3 + 1] #off by one error here?
                  div class:'row show-grid', ->
-                  team_div t for t in @teams[row*3..row*3+2]
+                  team_div t for t in @rest_teams[row*3..row*3+2]
     view admin: ->
       doctype 5
       team_row = (name, votes) ->
