@@ -37,6 +37,7 @@ db.open (err,db) ->
     get '/': ->
       teams.all (err,t) =>
         @winning_teams = (team for team in t when team.prestige > 0)
+        @winning_teams = @winning_teams.sort((team) -> -1 * team.prestige)
  
         shuffle = (input) ->
           swap  = (input, x,  y) -> [input[x], input[y]] = [input[y], input[x]]
