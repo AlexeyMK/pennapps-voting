@@ -37,7 +37,7 @@ db.open (err,db) ->
     get '/': ->
       teams.all (err,t) =>
         @winning_teams = (team for team in t when team.prestige > 0)
-        @winning_teams = @winning_teams.sort((team) -> -1 * team.prestige)
+        @winning_teams = @winning_teams.sort((t1, t2) -> t2.prestige - t1.prestige)
  
         shuffle = (input) ->
           swap  = (input, x,  y) -> [input[x], input[y]] = [input[y], input[x]]
@@ -275,7 +275,7 @@ db.open (err,db) ->
               img src: "http://2011f.pennapps.com/storage/First-round-capital-logo.jpeg?__SQUARESPACE_CACHEVERSION=1315019808345"
               img src: 'pennua.jpg'
             div class: "explanation", ->
-              p "Voting is closed.  <<br/> Winners for the PennApps 2011 Student Choice Award will be announced shortly."
+              p "Congratulations to uWave, Social+ and the rest of the winners!"
               p "<small>Confused? <a href='http://2011f.pennapps.com/'>Learn about PennApps...</a></small>"
             section id:'grid-system', ->
               for winner in @winning_teams
