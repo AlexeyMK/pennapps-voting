@@ -37,7 +37,7 @@ db.open (err,db) ->
     get '/': ->
       teams.all (err,t) =>
         @winning_teams = (team for team in t when team.prestige > 0)
-        @winning_teams = @winning_teams.sort((t1, t2) -> t2.prestige - t1.prestige)
+        @winning_teams = @winning_teams.sort((t1,t2) -> t2.prestige - t1.prestige)
  
         shuffle = (input) ->
           swap  = (input, x,  y) -> [input[x], input[y]] = [input[y], input[x]]
@@ -271,12 +271,8 @@ db.open (err,db) ->
           div id: "fb-root"
           div class: "container", ->
             div class: "header", ->
-              img src: "http://2011f.pennapps.com/storage/newest_logo.png"
-              img src: "http://2011f.pennapps.com/storage/First-round-capital-logo.jpeg?__SQUARESPACE_CACHEVERSION=1315019808345"
-              img src: 'pennua.jpg'
-            div class: "explanation", ->
-              p "Congratulations to uWave, Social+ and the rest of the winners!"
-              p "<small>Confused? <a href='http://2011f.pennapps.com/'>Learn about PennApps...</a></small>"
+              a href:"http://2011f.pennapps.com", ->
+                img src: "http://2011f.pennapps.com/storage/newest_logo.png"
             section id:'grid-system', ->
               for winner in @winning_teams
                 winning_team_div winner
